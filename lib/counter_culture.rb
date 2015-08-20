@@ -42,7 +42,8 @@ module CounterCulture
           :column_names => options[:column_names],
           :delta_column => options[:delta_column],
           :foreign_key_values => options[:foreign_key_values],
-          :touch => options[:touch]
+          :touch => options[:touch],
+          :skip_update_callbacks => options[:skip_update_callbacks]
         }
       end
 
@@ -267,6 +268,7 @@ module CounterCulture
         self.class.after_commit_counter_cache.each do |hash|
           # figure out whether the applicable counter cache changed (this can happen
           # with dynamic column names)
+          next if hash[:skip_update_callbacks]
           counter_cache_name_was = counter_cache_name_for(previous_model, hash[:counter_cache_name])
           counter_cache_name = counter_cache_name_for(self, hash[:counter_cache_name])
 
